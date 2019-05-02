@@ -8,7 +8,7 @@ import pandas as pd
 # Importing the dataset
 dataset = pd.read_csv('Position_Salaries.csv')
 X = dataset.iloc[:, 1:2].values
-y = dataset.iloc[:, 2].values
+y = dataset.iloc[:, 2:3].values
 
 # Splitting the dataset into the Training set and Test set
 """from sklearn.cross_validation import train_test_split
@@ -23,12 +23,21 @@ y = sc_y.fit_transform(y)
 
 # Fitting SVR to the dataset
 from sklearn.svm import SVR
-regressor = SVR(kernel = 'rbf')
-regressor.fit(X, y)
+# svr does not include feature scaling.
+# we need to define kernel ,for non-linear we use most commonly gaussian kernel which is rbf kernel ,this is already default choice for kernel.
+regressor = SVR(kernel='rbf')
+regressor.fit(X,y)
 
+data = [6.5]
+data = np.array(data)
+data = data.reshape(1,-1)
 # Predicting a new result
-y_pred = regressor.predict(6.5)
+y_pred = regressor.predict(sc_X.transform(data))
+# y_pred is scaled prediction we need to move it back to orgincal scale. so we need to inverse the scale tranformation.
 y_pred = sc_y.inverse_transform(y_pred)
+
+
+
 
 # Visualising the SVR results
 plt.scatter(X, y, color = 'red')
